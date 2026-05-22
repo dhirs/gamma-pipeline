@@ -198,10 +198,39 @@ def format_gammap_for_gamma(gammap_document: Dict[str, Any], capability_id: str)
     lines.append(f"# {capability_name} - GAMMAP Assessment Methodology")
     lines.append("")
     
+    # Get cards and log for debugging
+    cards = gammap_document.get('cards', [])
+    logger.info(f"Processing {len(cards)} cards for Gamma formatting")
+    
+    # Map source sections to more readable names
+    section_names = {
+        'section_0a': 'Section 0a: Executive Overview',
+        'section_0b': 'Section 0b: Document Structure',
+        'section_1': 'Section 1: Strategic Purpose',
+        'section_2': 'Section 2: Assessment Dimensions',
+        'section_3': 'Section 3: Architecture Best Practices',
+        'section_4': 'Section 4: Architecture Anti-patterns',
+        'section_5': 'Section 5: Knowledge Requirements',
+        'section_6': 'Section 6: Configuration Parameters',
+        'section_7': 'Section 7: Due Diligence',
+        'section_8': 'Section 8: Scoring Methodology',
+        'section_9': 'Section 9: Sample Scenario'
+    }
+    
     # Process each card as a section
-    for card in gammap_document.get('cards', []):
+    for i, card in enumerate(cards, 1):
         card_title = card.get('card_title', 'Untitled')
-        lines.append(f"## {card_title}")
+        source_section = card.get('source_section', '')
+        card_id = card.get('card_id', f'card_{i:02d}')
+        
+        # Add source section label to card title
+        section_label = section_names.get(source_section, source_section)
+        if section_label:
+            lines.append(f"## {card_title} [Source: {section_label}]")
+        else:
+            lines.append(f"## {card_title}")
+        
+        logger.info(f"Processing card {i}/{len(cards)}: {card_id} - {card_title} from {source_section}")
         lines.append("")
         
         # Process card content
@@ -234,6 +263,7 @@ def format_gammap_for_gamma(gammap_document: Dict[str, Any], capability_id: str)
                     lines.append(value)
                     lines.append("")
     
+    logger.info(f"Formatted {len(cards)} cards into {len(lines)} lines of text")
     return "\n".join(lines)
 
 
@@ -263,8 +293,7 @@ def create_gamma_document(api_url: str, api_key: str, gammap_document: Dict[str,
         'format': 'document',  # Document format, not presentation
         'textMode': 'preserve',  # Preserve our formatted text
         'title': f"{capability_name} - GAMMAP Assessment",
-        'numCards': len(gammap_document.get('cards', [])),
-        'additionalInstructions': f"This is a GAMMAP assessment methodology document for {capability_id}. Maintain professional formatting and structure.",
+        'additionalInstructions': f"IMPORTANT: Use the provided text EXACTLY AS-IS. Do NOT modify, rewrite, or reorganize the content. Each section header already includes [Source: Section X] labels that MUST be preserved. This is a GAMMAP assessment methodology document for {capability_id}. Create cards based on the ## headers provided in the text.",
         'textOptions': {
             'tone': 'professional',
             'audience': 'technical stakeholders'
@@ -282,6 +311,11 @@ def create_gamma_document(api_url: str, api_key: str, gammap_document: Dict[str,
         headers=headers,
         timeout=30
     )
+    
+    # Log response details for debugging
+    if response.status_code != 200:
+        logger.error(f"Gamma API error: Status {response.status_code}, Response: {response.text}")
+    
     response.raise_for_status()
     result_data = response.json()
     
@@ -333,8 +367,11 @@ def update_gamma_document(api_url: str, api_key: str, document_id: str, folder_i
         'format': 'document',
         'textMode': 'preserve',
         'title': f"{capability_name} - GAMMAP Assessment (Updated)",
-        'numCards': len(gammap_document.get('cards', [])),
-        'additionalInstructions': f"Updated GAMMAP assessment methodology document for {capability_id}. This is an update to document {document_id}."
+        'additionalInstructions': f"IMPORTANT: Use the provided text EXACTLY AS-IS. Do NOT modify, rewrite, or reorganize the content. Each section header already includes [Source: Section X] labels that MUST be preserved. Updated GAMMAP assessment methodology document for {capability_id}. This is an update to document {document_id}.",
+        'textOptions': {
+            'tone': 'professional',
+            'audience': 'technical stakeholders'
+        }
     }
     
     response = requests.post(
@@ -343,6 +380,11 @@ def update_gamma_document(api_url: str, api_key: str, document_id: str, folder_i
         headers=headers,
         timeout=30
     )
+    
+    # Log response details for debugging
+    if response.status_code != 200:
+        logger.error(f"Gamma API error: Status {response.status_code}, Response: {response.text}")
+    
     response.raise_for_status()
     result_data = response.json()
     

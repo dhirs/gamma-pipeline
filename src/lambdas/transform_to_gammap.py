@@ -119,22 +119,17 @@ def create_executive_overview_card(workbook: Dict[str, Any]) -> Dict[str, Any]:
     """Create card for Section 0a - Executive Overview"""
     section = workbook.get('section_0a', {})
     
+    # Copy ALL content from section_0a except metadata
+    content = {k: v for k, v in section.items() if k != '_metadata'}
+    # Add source section to content
+    content['_source_section'] = 'section_0a'
+    
     return {
         'card_id': 'card_01_executive_overview',
         'card_title': 'Executive Overview',
         'card_type': 'overview',
         'source_section': 'section_0a',
-        'content': {
-            'what_this_is': section.get('what_this_workbook_is', ''),
-            'who_this_is_for': section.get('who_this_is_for', []),
-            'what_you_will_get': section.get('what_you_will_get', []),
-            'why': section.get('why', {}),
-            'what': section.get('what', {}),
-            'who': section.get('who', {}),
-            'when': section.get('when', {}),
-            'where': section.get('where', {}),
-            'how': section.get('how', {})
-        }
+        'content': content
     }
 
 
@@ -142,17 +137,17 @@ def create_document_structure_card(workbook: Dict[str, Any]) -> Dict[str, Any]:
     """Create card for Section 0b - Document Structure"""
     section = workbook.get('section_0b', {})
     
+    # Copy ALL content from section_0b except metadata
+    content = {k: v for k, v in section.items() if k != '_metadata'}
+    # Add source section to content
+    content['_source_section'] = 'section_0b'
+    
     return {
         'card_id': 'card_02_document_structure',
         'card_title': 'Document Structure & Process',
         'card_type': 'guidance',
         'source_section': 'section_0b',
-        'content': {
-            'four_step_process': section.get('four_step_process', []),
-            'overview': section.get('overview', ''),
-            'layout': section.get('layout', {}),
-            'how_to_use': section.get('how_to_use', [])
-        }
+        'content': content
     }
 
 
@@ -160,18 +155,17 @@ def create_strategic_purpose_card(workbook: Dict[str, Any]) -> Dict[str, Any]:
     """Create card for Section 1 - Strategic Purpose"""
     section = workbook.get('section_1', {})
     
+    # Copy ALL content from section_1 except metadata
+    content = {k: v for k, v in section.items() if k != '_metadata'}
+    # Add source section to content
+    content['_source_section'] = 'section_1'
+    
     return {
         'card_id': 'card_03_strategic_purpose',
         'card_title': 'Strategic Purpose & Success Criteria',
         'card_type': 'strategy',
         'source_section': 'section_1',
-        'content': {
-            'strategic_purpose': section.get('strategic_purpose', ''),
-            'success_criteria': section.get('success_criteria', []),
-            'evaluation_points': section.get('evaluation_points', []),
-            'key_outcomes': section.get('key_outcomes', []),
-            'business_value': section.get('business_value', '')
-        }
+        'content': content
     }
 
 
@@ -179,28 +173,17 @@ def create_assessment_dimensions_card(workbook: Dict[str, Any]) -> Dict[str, Any
     """Create card for Section 2 - Assessment Dimensions"""
     section = workbook.get('section_2', {})
     
-    dimensions = []
-    if 'dimensions' in section:
-        for dim in section['dimensions']:
-            if isinstance(dim, dict):
-                dimensions.append({
-                    'dimension_name': dim.get('dimension_name', ''),
-                    'description': dim.get('description', ''),
-                    'weight': dim.get('weight', 0),
-                    'test_questions': dim.get('test_questions', []),
-                    'evaluation_criteria': dim.get('criteria', [])
-                })
+    # Copy ALL content from section_2 except metadata
+    content = {k: v for k, v in section.items() if k != '_metadata'}
+    # Add source section to content
+    content['_source_section'] = 'section_2'
     
     return {
         'card_id': 'card_04_assessment_dimensions',
         'card_title': 'Assessment Dimensions',
         'card_type': 'assessment',
         'source_section': 'section_2',
-        'content': {
-            'dimensions': dimensions,
-            'total_dimensions': len(dimensions),
-            'assessment_approach': section.get('assessment_approach', '')
-        }
+        'content': content
     }
 
 
@@ -208,23 +191,20 @@ def create_architecture_dos_card(workbook: Dict[str, Any]) -> Dict[str, Any]:
     """Create card for Section 3 - Architecture DO's"""
     section = workbook.get('section_3', [])
     
-    # Handle if section_3 is a list directly (list of DO's)
+    # If section_3 is a list, use it directly, otherwise copy all content
     if isinstance(section, list):
-        should_do = section
+        content = {'should_do': section}
     else:
-        should_do = section.get('should_do', [])
+        content = {k: v for k, v in section.items() if k != '_metadata'}
+    # Add source section to content
+    content['_source_section'] = 'section_3'
     
     return {
         'card_id': 'card_05_architecture_dos',
         'card_title': "Architecture DO's - Best Practices",
         'card_type': 'best_practices',
         'source_section': 'section_3',
-        'content': {
-            'should_do': should_do,
-            'best_practices': section.get('best_practices', []) if isinstance(section, dict) else [],
-            'recommended_patterns': section.get('patterns', []) if isinstance(section, dict) else [],
-            'implementation_guidelines': section.get('guidelines', []) if isinstance(section, dict) else []
-        }
+        'content': content
     }
 
 
@@ -232,23 +212,20 @@ def create_architecture_donts_card(workbook: Dict[str, Any]) -> Dict[str, Any]:
     """Create card for Section 4 - Architecture DON'Ts"""
     section = workbook.get('section_4', [])
     
-    # Handle if section_4 is a list directly (list of DON'Ts)
+    # If section_4 is a list, use it directly, otherwise copy all content
     if isinstance(section, list):
-        should_not_do = section
+        content = {'should_not_do': section}
     else:
-        should_not_do = section.get('should_not_do', [])
+        content = {k: v for k, v in section.items() if k != '_metadata'}
+    # Add source section to content
+    content['_source_section'] = 'section_4'
     
     return {
         'card_id': 'card_06_architecture_donts',
         'card_title': "Architecture DON'Ts - Anti-patterns",
         'card_type': 'anti_patterns',
         'source_section': 'section_4',
-        'content': {
-            'should_not_do': should_not_do,
-            'anti_patterns': section.get('anti_patterns', []) if isinstance(section, dict) else [],
-            'common_mistakes': section.get('mistakes', []) if isinstance(section, dict) else [],
-            'risks_to_avoid': section.get('risks', []) if isinstance(section, dict) else []
-        }
+        'content': content
     }
 
 
@@ -256,43 +233,17 @@ def create_knowledge_requirements_card(workbook: Dict[str, Any]) -> Dict[str, An
     """Create card for Section 5 - Knowledge Requirements"""
     section = workbook.get('section_5', {})
     
-    knowledge_areas = []
-    
-    # Process certification paths
-    if 'certification_paths' in section:
-        for cert in section['certification_paths']:
-            if isinstance(cert, dict):
-                knowledge_areas.append({
-                    'type': 'certification',
-                    'name': cert.get('certification_name', ''),
-                    'provider': cert.get('provider', ''),
-                    'relevance': cert.get('relevance', ''),
-                    'level': cert.get('level', '')
-                })
-    
-    # Process learning paths
-    if 'learning_paths' in section:
-        for path in section['learning_paths']:
-            if isinstance(path, dict):
-                knowledge_areas.append({
-                    'type': 'learning_path',
-                    'name': path.get('path_name', ''),
-                    'topics': path.get('topics', []),
-                    'duration': path.get('estimated_duration', ''),
-                    'resources': path.get('resources', [])
-                })
+    # Copy ALL content from section_5 except metadata
+    content = {k: v for k, v in section.items() if k != '_metadata'}
+    # Add source section to content
+    content['_source_section'] = 'section_5'
     
     return {
         'card_id': 'card_07_knowledge_requirements',
         'card_title': 'Knowledge & Certification Requirements',
         'card_type': 'knowledge',
         'source_section': 'section_5',
-        'content': {
-            'knowledge_areas': knowledge_areas,
-            'certification_paths': section.get('certification_paths', []),
-            'learning_paths': section.get('learning_paths', []),
-            'skill_requirements': section.get('skill_requirements', [])
-        }
+        'content': content
     }
 
 
@@ -300,31 +251,17 @@ def create_configuration_parameters_card(workbook: Dict[str, Any]) -> Dict[str, 
     """Create card for Section 6 - Configuration Parameters"""
     section = workbook.get('section_6', {})
     
-    parameters = []
-    if 'parameters' in section:
-        for param in section['parameters']:
-            if isinstance(param, dict):
-                parameters.append({
-                    'parameter_name': param.get('parameter_name', ''),
-                    'description': param.get('description', ''),
-                    'type': param.get('type', 'string'),
-                    'required': param.get('required', False),
-                    'default_value': param.get('default', ''),
-                    'validation_rules': param.get('validation', []),
-                    'example_values': param.get('examples', [])
-                })
+    # Copy ALL content from section_6 except metadata
+    content = {k: v for k, v in section.items() if k != '_metadata'}
+    # Add source section to content
+    content['_source_section'] = 'section_6'
     
     return {
         'card_id': 'card_08_configuration_parameters',
         'card_title': 'Configuration Parameters',
         'card_type': 'configuration',
         'source_section': 'section_6',
-        'content': {
-            'parameters': parameters,
-            'total_parameters': len(parameters),
-            'required_parameters': [p for p in parameters if p.get('required')],
-            'optional_parameters': [p for p in parameters if not p.get('required')]
-        }
+        'content': content
     }
 
 
@@ -332,30 +269,17 @@ def create_due_diligence_card(workbook: Dict[str, Any]) -> Dict[str, Any]:
     """Create card for Section 7 - Due Diligence Questions"""
     section = workbook.get('section_7', {})
     
-    questions = []
-    if 'questions' in section:
-        for question in section['questions']:
-            if isinstance(question, dict):
-                questions.append({
-                    'category': question.get('category', 'General'),
-                    'question': question.get('question', ''),
-                    'rationale': question.get('why_important', ''),
-                    'expected_evidence': question.get('expected_response', ''),
-                    'risk_level': question.get('risk_level', 'Medium'),
-                    'evaluation_criteria': question.get('evaluation_criteria', [])
-                })
+    # Copy ALL content from section_7 except metadata
+    content = {k: v for k, v in section.items() if k != '_metadata'}
+    # Add source section to content
+    content['_source_section'] = 'section_7'
     
     return {
         'card_id': 'card_09_due_diligence',
         'card_title': 'Due Diligence Questions',
         'card_type': 'due_diligence',
         'source_section': 'section_7',
-        'content': {
-            'questions': questions,
-            'total_questions': len(questions),
-            'categories': list(set([q['category'] for q in questions])),
-            'assessment_approach': section.get('assessment_approach', '')
-        }
+        'content': content
     }
 
 
@@ -363,19 +287,17 @@ def create_scoring_methodology_card(workbook: Dict[str, Any]) -> Dict[str, Any]:
     """Create card for Section 8 - Scoring Methodology"""
     section = workbook.get('section_8', {})
     
+    # Copy ALL content from section_8 except metadata
+    content = {k: v for k, v in section.items() if k != '_metadata'}
+    # Add source section to content
+    content['_source_section'] = 'section_8'
+    
     return {
         'card_id': 'card_10_scoring_methodology',
         'card_title': 'Scoring Methodology',
         'card_type': 'scoring',
         'source_section': 'section_8',
-        'content': {
-            'methodology': section.get('methodology', ''),
-            'dimension_weights': section.get('dimension_weights', {}),
-            'scoring_thresholds': section.get('scoring_thresholds', {}),
-            'scoring_scale': section.get('scoring_scale', {}),
-            'calculation_approach': section.get('calculation_approach', ''),
-            'interpretation_guide': section.get('interpretation_guide', {})
-        }
+        'content': content
     }
 
 
@@ -383,20 +305,15 @@ def create_sample_scenario_card(workbook: Dict[str, Any]) -> Dict[str, Any]:
     """Create card for Section 9 - Sample Scenario"""
     section = workbook.get('section_9', {})
     
+    # Copy ALL content from section_9 except metadata
+    content = {k: v for k, v in section.items() if k != '_metadata'}
+    # Add source section to content
+    content['_source_section'] = 'section_9'
+    
     return {
         'card_id': 'card_11_sample_scenario',
         'card_title': 'Sample Implementation Scenario',
         'card_type': 'scenario',
         'source_section': 'section_9',
-        'content': {
-            'scenario_name': section.get('scenario_name', 'Sample Scenario'),
-            'description': section.get('description', ''),
-            'context': section.get('context', {}),
-            'requirements': section.get('requirements', []),
-            'solution_approach': section.get('solution', ''),
-            'implementation_steps': section.get('implementation_steps', []),
-            'evaluation_criteria': section.get('evaluation_criteria', []),
-            'expected_outcomes': section.get('expected_outcomes', []),
-            'lessons_learned': section.get('lessons_learned', [])
-        }
+        'content': content
     }
