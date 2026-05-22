@@ -1,0 +1,125 @@
+{
+  "Comment": "GAMMAP Document Generation Pipeline - Complete",
+  "StartAt": "LoadWorkbook",
+  "States": {
+    "LoadWorkbook": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:ap-south-1:863372932275:function:dw-cap-load-workbook",
+      "Parameters": {
+        "workbook_path.$": "$.workbook_path",
+        "capability_id.$": "$.capability_id"
+      },
+      "ResultPath": "$.load_result",
+      "Next": "CheckValidation",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "ResultPath": "$.error",
+          "Next": "HandleError"
+        }
+      ]
+    },
+    "CheckValidation": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.load_result.validation.passed",
+          "BooleanEquals": true,
+          "Next": "TransformToGAMMAP"
+        }
+      ],
+      "Default": "ValidationFailed"
+    },
+    "TransformToGAMMAP": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:ap-south-1:863372932275:function:dw-cap-transform-gammap",
+      "InputPath": "$",
+      "ResultPath": "$.transform_result",
+      "Next": "SaveGAMMAP",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "ResultPath": "$.error",
+          "Next": "HandleError"
+        }
+      ]
+    },
+    "SaveGAMMAP": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:ap-south-1:863372932275:function:dw-cap-save-gammap",
+      "Parameters": {
+        "gammap_document.$": "$.transform_result.gammap_document",
+        "metadata.$": "$.transform_result.metadata"
+      },
+      "ResultPath": "$.save_result",
+      "Next": "UploadToGamma",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "ResultPath": "$.error",
+          "Next": "HandleError"
+        }
+      ]
+    },
+    "UploadToGamma": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:ap-south-1:863372932275:function:dw-cap-upload-gamma",
+      "InputPath": "$",
+      "ResultPath": "$.upload_result",
+      "Next": "Success",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "ResultPath": "$.error",
+          "Next": "HandleError"
+        }
+      ]
+    },
+    "Success": {
+      "Type": "Succeed",
+      "OutputPath": "$.upload_result"
+    },
+    "ValidationFailed": {
+      "Type": "Fail",
+      "Cause": "Workbook validation failed - missing required sections",
+      "Error": "ValidationError"
+    },
+    "HandleError": {
+      "Type": "Fail",
+      "Cause": "Pipeline execution failed",
+      "Error": "PipelineError"
+    }
+  }
+}
