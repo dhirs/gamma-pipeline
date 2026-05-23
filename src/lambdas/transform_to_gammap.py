@@ -119,8 +119,13 @@ def create_executive_overview_card(workbook: Dict[str, Any]) -> Dict[str, Any]:
     """Create card for Section 0a - Executive Overview"""
     section = workbook.get('section_0a', {})
     
-    # Copy ALL content from section_0a except metadata
-    content = {k: v for k, v in section.items() if k != '_metadata'}
+    # Handle both list and dict formats
+    if isinstance(section, list):
+        content = {'overview_items': section}
+    elif isinstance(section, dict):
+        content = {k: v for k, v in section.items() if k != '_metadata'}
+    else:
+        content = {}
     # Add source section to content
     content['_source_section'] = 'section_0a'
     
@@ -137,8 +142,13 @@ def create_document_structure_card(workbook: Dict[str, Any]) -> Dict[str, Any]:
     """Create card for Section 0b - Document Structure"""
     section = workbook.get('section_0b', {})
     
-    # Copy ALL content from section_0b except metadata
-    content = {k: v for k, v in section.items() if k != '_metadata'}
+    # Handle both list and dict formats
+    if isinstance(section, list):
+        content = {'structure_items': section}
+    elif isinstance(section, dict):
+        content = {k: v for k, v in section.items() if k != '_metadata'}
+    else:
+        content = {}
     # Add source section to content
     content['_source_section'] = 'section_0b'
     
@@ -155,8 +165,13 @@ def create_strategic_purpose_card(workbook: Dict[str, Any]) -> Dict[str, Any]:
     """Create card for Section 1 - Strategic Purpose"""
     section = workbook.get('section_1', {})
     
-    # Copy ALL content from section_1 except metadata
-    content = {k: v for k, v in section.items() if k != '_metadata'}
+    # Handle both list and dict formats
+    if isinstance(section, list):
+        content = {'strategic_items': section}
+    elif isinstance(section, dict):
+        content = {k: v for k, v in section.items() if k != '_metadata'}
+    else:
+        content = {}
     # Add source section to content
     content['_source_section'] = 'section_1'
     
@@ -173,8 +188,13 @@ def create_assessment_dimensions_card(workbook: Dict[str, Any]) -> Dict[str, Any
     """Create card for Section 2 - Assessment Dimensions"""
     section = workbook.get('section_2', {})
     
-    # Copy ALL content from section_2 except metadata
-    content = {k: v for k, v in section.items() if k != '_metadata'}
+    # Handle both list and dict formats
+    if isinstance(section, list):
+        content = {'dimensions': section}
+    elif isinstance(section, dict):
+        content = {k: v for k, v in section.items() if k != '_metadata'}
+    else:
+        content = {}
     # Add source section to content
     content['_source_section'] = 'section_2'
     
@@ -233,8 +253,13 @@ def create_knowledge_requirements_card(workbook: Dict[str, Any]) -> Dict[str, An
     """Create card for Section 5 - Knowledge Requirements"""
     section = workbook.get('section_5', {})
     
-    # Copy ALL content from section_5 except metadata
-    content = {k: v for k, v in section.items() if k != '_metadata'}
+    # Handle both list and dict formats
+    if isinstance(section, list):
+        content = {'knowledge_areas': section}
+    elif isinstance(section, dict):
+        content = {k: v for k, v in section.items() if k != '_metadata'}
+    else:
+        content = {}
     # Add source section to content
     content['_source_section'] = 'section_5'
     
@@ -251,8 +276,13 @@ def create_configuration_parameters_card(workbook: Dict[str, Any]) -> Dict[str, 
     """Create card for Section 6 - Configuration Parameters"""
     section = workbook.get('section_6', {})
     
-    # Copy ALL content from section_6 except metadata
-    content = {k: v for k, v in section.items() if k != '_metadata'}
+    # Handle both list and dict formats
+    if isinstance(section, list):
+        content = {'parameters': section}
+    elif isinstance(section, dict):
+        content = {k: v for k, v in section.items() if k != '_metadata'}
+    else:
+        content = {}
     # Add source section to content
     content['_source_section'] = 'section_6'
     
@@ -269,8 +299,13 @@ def create_due_diligence_card(workbook: Dict[str, Any]) -> Dict[str, Any]:
     """Create card for Section 7 - Due Diligence Questions"""
     section = workbook.get('section_7', {})
     
-    # Copy ALL content from section_7 except metadata
-    content = {k: v for k, v in section.items() if k != '_metadata'}
+    # Handle both list and dict formats
+    if isinstance(section, list):
+        content = {'questions': section}
+    elif isinstance(section, dict):
+        content = {k: v for k, v in section.items() if k != '_metadata'}
+    else:
+        content = {}
     # Add source section to content
     content['_source_section'] = 'section_7'
     
@@ -287,8 +322,13 @@ def create_scoring_methodology_card(workbook: Dict[str, Any]) -> Dict[str, Any]:
     """Create card for Section 8 - Scoring Methodology"""
     section = workbook.get('section_8', {})
     
-    # Copy ALL content from section_8 except metadata
-    content = {k: v for k, v in section.items() if k != '_metadata'}
+    # Handle both list and dict formats
+    if isinstance(section, list):
+        content = {'scoring_items': section}
+    elif isinstance(section, dict):
+        content = {k: v for k, v in section.items() if k != '_metadata'}
+    else:
+        content = {}
     # Add source section to content
     content['_source_section'] = 'section_8'
     
@@ -305,8 +345,13 @@ def create_sample_scenario_card(workbook: Dict[str, Any]) -> Dict[str, Any]:
     """Create card for Section 9 - Sample Scenario"""
     section = workbook.get('section_9', {})
     
-    # Copy ALL content from section_9 except metadata
-    content = {k: v for k, v in section.items() if k != '_metadata'}
+    # Handle both list and dict formats
+    if isinstance(section, list):
+        content = {'scenarios': section}
+    elif isinstance(section, dict):
+        content = {k: v for k, v in section.items() if k != '_metadata'}
+    else:
+        content = {}
     # Add source section to content
     content['_source_section'] = 'section_9'
     

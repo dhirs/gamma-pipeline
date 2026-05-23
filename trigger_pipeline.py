@@ -17,9 +17,17 @@ def trigger_pipeline(workbook_path):
     # State machine ARN
     state_machine_arn = 'arn:aws:states:ap-south-1:863372932275:stateMachine:gammap-generation-pipeline'
     
+    # Extract capability_id from the path
+    # Expected format: s3://datawhistl/capabilities/output/{capability_id}/{timestamp}/filename.json
+    path_parts = workbook_path.replace('s3://', '').split('/')
+    capability_id = None
+    if len(path_parts) >= 5 and path_parts[2] == 'output':
+        capability_id = path_parts[3]  # This will be like 'Data.C4'
+    
     # Prepare input
     input_data = {
-        "workbook_path": workbook_path
+        "workbook_path": workbook_path,
+        "capability_id": capability_id or "unknown"
     }
     
     # Start execution
@@ -27,6 +35,7 @@ def trigger_pipeline(workbook_path):
     
     print(f"Starting pipeline execution: {execution_name}")
     print(f"Input workbook: {workbook_path}")
+    print(f"Capability ID: {input_data['capability_id']}")
     
     response = stepfunctions.start_execution(
         stateMachineArn=state_machine_arn,
